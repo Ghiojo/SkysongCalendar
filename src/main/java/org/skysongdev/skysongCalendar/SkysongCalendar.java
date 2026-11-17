@@ -2,30 +2,26 @@ package org.skysongdev.skysongCalendar;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skysongdev.skysongCalendar.calendar.IcClock;
+import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
+import org.skysongdev.skysongCalendar.calendar.IrlCalibration;
+import org.skysongdev.skysongCalendar.calendar.IrlIcClock;
 import org.skysongdev.skysongCalendar.commands.CalendarCommand;
 import org.skysongdev.skysongCalendar.commands.DateCommand;
-import org.skysongdev.skysongCalendar.utils.Utils;
+import org.skysongdev.skysongCalendar.display.ChatPalette;
+import org.skysongdev.skysongCalendar.display.IcDateMessages;
+
+import java.time.Clock;
 
 public final class SkysongCalendar extends JavaPlugin {
-    private Utils utils = new Utils();
-    private MiniMessage mm = MiniMessage.miniMessage();
 
-    public SkysongCalendar() {
-    }
-
-    public Utils getUtils() {
-        return this.utils;
-    }
-
-    public MiniMessage getMiniMessage() {
-        return this.mm;
-    }
-
+    @Override
     public void onEnable() {
-        this.getCommand("calendar").setExecutor(new CalendarCommand(this));
-        this.getCommand("date").setExecutor(new DateCommand(this));
-    }
+        MiniMessage miniMessage = MiniMessage.miniMessage();
+        IcClock clock = new IrlIcClock(Clock.systemDefaultZone(), new IcDateConverter(IrlCalibration.SKYSONG));
+        IcDateMessages messages = new IcDateMessages(miniMessage, new ChatPalette());
 
-    public void onDisable() {
+        getCommand("calendar").setExecutor(new CalendarCommand(miniMessage));
+        getCommand("date").setExecutor(new DateCommand(clock, messages));
     }
 }
