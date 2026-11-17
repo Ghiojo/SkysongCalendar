@@ -1,0 +1,11 @@
+name: SkysongCalendar
+version: '1.0'
+main: org.skysongdev.skysongCalendar.SkysongCalendar
+api-version: '1.21'
+commands:
+  calendar:
+    description: "Opens the Calendar"
+    usage: "/calendar"
+  date:
+    description: "Shows the Date"
+    usage: "/date"
