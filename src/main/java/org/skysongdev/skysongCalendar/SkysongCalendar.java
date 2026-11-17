@@ -10,6 +10,7 @@ import org.skysongdev.skysongCalendar.commands.CalendarCommand;
 import org.skysongdev.skysongCalendar.commands.DateCommand;
 import org.skysongdev.skysongCalendar.display.ChatPalette;
 import org.skysongdev.skysongCalendar.display.IcDateMessages;
+import org.skysongdev.skysongCalendar.items.CalendarItems;
 
 import java.time.Clock;
 
@@ -23,5 +24,15 @@ public final class SkysongCalendar extends JavaPlugin {
 
         getCommand("calendar").setExecutor(new CalendarCommand(miniMessage));
         getCommand("date").setExecutor(new DateCommand(clock, messages));
+        registerCalendarItems(clock, messages);
+    }
+
+    /** Calendar items need SkysongItems; without it the plugin runs with its commands only. */
+    private void registerCalendarItems(IcClock clock, IcDateMessages messages) {
+        if (!getServer().getPluginManager().isPluginEnabled(CalendarItems.SKYSONG_ITEMS)) {
+            getLogger().info(CalendarItems.SKYSONG_ITEMS + " is not enabled; calendar items are off.");
+            return;
+        }
+        CalendarItems.register(this, clock, messages);
     }
 }
