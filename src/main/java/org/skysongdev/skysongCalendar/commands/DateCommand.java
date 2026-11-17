@@ -1,24 +1,26 @@
 package org.skysongdev.skysongCalendar.commands;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.skysongdev.skysongCalendar.SkysongCalendar;
+import org.skysongdev.skysongCalendar.calendar.IcClock;
+import org.skysongdev.skysongCalendar.display.IcDateMessages;
 
+/** {@code /date}: tells the sender today's IC date and season. */
 public class DateCommand implements CommandExecutor {
-    SkysongCalendar plugin;
+    private final IcClock clock;
+    private final IcDateMessages messages;
 
-    public DateCommand(SkysongCalendar plugin) {
-        this.plugin = plugin;
+    public DateCommand(IcClock clock, IcDateMessages messages) {
+        this.clock = clock;
+        this.messages = messages;
     }
 
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        MiniMessage miniMessage = this.plugin.getMiniMessage();
-        String dayName = this.plugin.getUtils().getCurrentDayName();
-        commandSender.sendMessage(miniMessage.deserialize("<yellow>Today is " + dayName + "<yellow>, " + this.plugin.getUtils().getCurrentDay() + "<yellow> of " + this.plugin.getUtils().getCurrentMonth() + "<yellow>, " + this.plugin.getUtils().getCurrentYear() + "<yellow> AB."));
-        commandSender.sendMessage(this.plugin.getMiniMessage().deserialize("<yellow>The season is " + this.plugin.getUtils().getCurrentSeason()));
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
+                             @NotNull String label, @NotNull String[] args) {
+        messages.describe(clock.today()).forEach(sender::sendMessage);
         return true;
     }
 }
