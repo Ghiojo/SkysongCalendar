@@ -19,7 +19,7 @@ public final class SkysongCalendar extends JavaPlugin {
     @Override
     public void onEnable() {
         MiniMessage miniMessage = MiniMessage.miniMessage();
-        IcClock clock = new IrlIcClock(Clock.systemDefaultZone(), new IcDateConverter(IrlCalibration.SKYSONG));
+        IcClock clock = new IrlIcClock(Clock.system(IrlCalibration.ZONE), new IcDateConverter(IrlCalibration.SKYSONG));
         IcDateMessages messages = new IcDateMessages(miniMessage, new ChatPalette());
 
         getCommand("calendar").setExecutor(new CalendarCommand(miniMessage));
