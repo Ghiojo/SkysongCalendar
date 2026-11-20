@@ -1,0 +1,9 @@
+time:
+  # Drive the Minecraft time of every managed world from the IC calendar.
+  enabled: true
+  # How often world time is set, in server ticks (20 ticks = 1 second).
+  # The sun moves less than one Minecraft tick per second, so the steps are invisible.
+  update-interval-ticks: 20
+  # Worlds whose time this plugin never touches: no gamerule change, no time set.
+  # The Nether and the End have no day cycle and are always skipped.
+  blacklisted-worlds: []
