@@ -23,12 +23,18 @@ repositories {
         name = "jitpack"
         url = "https://jitpack.io"
     }
+    maven {
+        name = "placeholderapi"
+        url = "https://repo.extendedclip.com/releases/"
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
     // SkysongItems' API, for the calendar item tag. SkysongItems ships it, so it is never shaded.
     compileOnly 'com.github.Ghiojo:Skysong-Special-Items:1.2.0'
+    // PlaceholderAPI, for the %skysongcalendar_...% placeholders. Optional at runtime.
+    compileOnly 'me.clip:placeholderapi:2.11.6'
 
     testImplementation "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
     testImplementation platform('org.junit:junit-bom:5.11.4')

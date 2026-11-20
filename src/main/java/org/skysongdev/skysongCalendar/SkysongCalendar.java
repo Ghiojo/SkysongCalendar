@@ -14,6 +14,8 @@ import org.skysongdev.skysongCalendar.commands.DateCommand;
 import org.skysongdev.skysongCalendar.display.ChatPalette;
 import org.skysongdev.skysongCalendar.display.IcDateMessages;
 import org.skysongdev.skysongCalendar.items.CalendarItems;
+import org.skysongdev.skysongCalendar.placeholders.CalendarPlaceholderValues;
+import org.skysongdev.skysongCalendar.placeholders.CalendarPlaceholders;
 import org.skysongdev.skysongCalendar.time.TimeSettings;
 import org.skysongdev.skysongCalendar.time.WorldTimeService;
 
@@ -35,6 +37,7 @@ public final class SkysongCalendar extends JavaPlugin {
         getCommand("calendar").setExecutor(new CalendarCommand(miniMessage, this::reloadTimeSettings));
         getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
         registerCalendarItems(clock, messages);
+        registerPlaceholders(clock, icTime);
 
         worldTime = new WorldTimeService(this, icTime, dates);
         try {
@@ -55,6 +58,15 @@ public final class SkysongCalendar extends JavaPlugin {
         if (worldTime != null) {
             worldTime.stop();
         }
+    }
+
+    /** Placeholders need PlaceholderAPI; without it the plugin runs without them. */
+    private void registerPlaceholders(IcClock clock, IcTimeSource icTime) {
+        if (!getServer().getPluginManager().isPluginEnabled(CalendarPlaceholders.PLACEHOLDER_API)) {
+            getLogger().info(CalendarPlaceholders.PLACEHOLDER_API + " is not enabled; placeholders are off.");
+            return;
+        }
+        new CalendarPlaceholders(this, new CalendarPlaceholderValues(clock, icTime)).register();
     }
 
     /** Calendar items need SkysongItems; without it the plugin runs with its commands only. */
