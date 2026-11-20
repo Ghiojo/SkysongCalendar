@@ -32,11 +32,21 @@ public final class SkysongCalendar extends JavaPlugin {
         IcTimeSource icTime = new IrlIcTimeSource(irlClock, new IcMomentConverter(IrlCalibration.SKYSONG));
         IcDateMessages messages = new IcDateMessages(miniMessage, new ChatPalette());
 
-        getCommand("calendar").setExecutor(new CalendarCommand(miniMessage));
+        getCommand("calendar").setExecutor(new CalendarCommand(miniMessage, this::reloadTimeSettings));
         getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
         registerCalendarItems(clock, messages);
 
         worldTime = new WorldTimeService(this, icTime, dates);
+        try {
+            worldTime.start(TimeSettings.from(getConfig()));
+        } catch (IllegalArgumentException e) {
+            getLogger().severe("World time sync is off, config.yml is invalid: " + e.getMessage());
+        }
+    }
+
+    /** Re-reads config.yml; if it is invalid, throws and leaves the running settings alone. */
+    private void reloadTimeSettings() {
+        reloadConfig();
         worldTime.start(TimeSettings.from(getConfig()));
     }
 

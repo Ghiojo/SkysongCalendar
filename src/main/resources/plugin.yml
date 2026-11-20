@@ -5,8 +5,12 @@ api-version: '1.21'
 softdepend: [Skysong_Items]
 commands:
   calendar:
-    description: "Opens the Calendar"
-    usage: "/calendar"
+    description: "Reloads SkysongCalendar's config"
+    usage: "/calendar reload"
   date:
     description: "Shows the IC date and time"
     usage: "/date"
+permissions:
+  skysongcalendar.reload:
+    description: "Use /calendar reload"
+    default: op
