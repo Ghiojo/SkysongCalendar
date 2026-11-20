@@ -7,6 +7,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 import org.skysongdev.skysongCalendar.calendar.Festival;
 import org.skysongdev.skysongCalendar.calendar.IcDate;
+import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
 import org.skysongdev.skysongCalendar.calendar.Month;
 
 import java.util.List;
@@ -26,6 +27,14 @@ class IcDateMessagesTest {
         List<Component> lines = messages.describe(new IcDate(799, Month.IDALIA, 6));
 
         assertEquals(List.of("Today is Luxensday, 6 of Idalia, 799 AB.", "The season is Florescia"), plain(lines));
+    }
+
+    @Test
+    void putsTheTimeBetweenTheDateAndTheSeason() {
+        List<Component> lines = messages.describe(new IcDate(799, Month.IDALIA, 6), new IcTimeOfDay(9 * 3600 + 5 * 60 + 59));
+
+        assertEquals(List.of("Today is Luxensday, 6 of Idalia, 799 AB.", "It is 09:05.", "The season is Florescia"),
+                plain(lines));
     }
 
     @Test
