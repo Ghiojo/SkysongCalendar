@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.skysongdev.skysongCalendar.calendar.IcClock;
 import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
 import org.skysongdev.skysongCalendar.calendar.IcMomentConverter;
+import org.skysongdev.skysongCalendar.calendar.IcTimeSource;
 import org.skysongdev.skysongCalendar.calendar.IrlCalibration;
 import org.skysongdev.skysongCalendar.calendar.IrlIcClock;
 import org.skysongdev.skysongCalendar.calendar.IrlIcTimeSource;
@@ -28,14 +29,14 @@ public final class SkysongCalendar extends JavaPlugin {
         MiniMessage miniMessage = MiniMessage.miniMessage();
         Clock irlClock = Clock.system(IrlCalibration.ZONE);
         IcClock clock = new IrlIcClock(irlClock, new IcDateConverter(IrlCalibration.SKYSONG));
+        IcTimeSource icTime = new IrlIcTimeSource(irlClock, new IcMomentConverter(IrlCalibration.SKYSONG));
         IcDateMessages messages = new IcDateMessages(miniMessage, new ChatPalette());
 
         getCommand("calendar").setExecutor(new CalendarCommand(miniMessage));
-        getCommand("date").setExecutor(new DateCommand(clock, messages));
+        getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
         registerCalendarItems(clock, messages);
 
-        worldTime = new WorldTimeService(this,
-                new IrlIcTimeSource(irlClock, new IcMomentConverter(IrlCalibration.SKYSONG)), new MinecraftTime());
+        worldTime = new WorldTimeService(this, icTime, new MinecraftTime());
         worldTime.start(TimeSettings.from(getConfig()));
     }
 

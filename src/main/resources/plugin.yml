@@ -8,5 +8,5 @@ commands:
     description: "Opens the Calendar"
     usage: "/calendar"
   date:
-    description: "Shows the Date"
+    description: "Shows the IC date and time"
     usage: "/date"
