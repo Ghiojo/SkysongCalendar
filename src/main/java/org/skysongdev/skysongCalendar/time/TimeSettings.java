@@ -1,6 +1,7 @@
 package org.skysongdev.skysongCalendar.time;
 
 import org.bukkit.configuration.Configuration;
+import org.skysongdev.skysongCalendar.calendar.IcMonthDay;
 
 /**
  * The {@code time} section of {@code config.yml}.
@@ -21,6 +22,8 @@ public record TimeSettings(boolean enabled, int updateIntervalTicks, WorldBlackl
                 new WorldBlacklist(config.getStringList("time.blacklisted-worlds")),
                 new DaylightSettings(
                         config.getDouble("time.daylight.min-hours", DaylightSettings.EVEN.minHours()),
-                        config.getDouble("time.daylight.max-hours", DaylightSettings.EVEN.maxHours())));
+                        config.getDouble("time.daylight.max-hours", DaylightSettings.EVEN.maxHours()),
+                        IcMonthDay.parse(config.getString("time.daylight.summer-solstice",
+                                DaylightSettings.DEFAULT_SUMMER_SOLSTICE.toString()))));
     }
 }

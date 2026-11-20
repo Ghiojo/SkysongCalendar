@@ -3,6 +3,7 @@ package org.skysongdev.skysongCalendar.time;
 import org.junit.jupiter.api.Test;
 import org.skysongdev.skysongCalendar.calendar.IcDate;
 import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
+import org.skysongdev.skysongCalendar.calendar.IcMonthDay;
 import org.skysongdev.skysongCalendar.calendar.IrlCalibration;
 import org.skysongdev.skysongCalendar.calendar.Month;
 
@@ -14,7 +15,7 @@ class SeasonalDaylightTest {
     private static final double TOLERANCE_SECONDS = 60;
 
     private final IcDateConverter dates = new IcDateConverter(IrlCalibration.SKYSONG);
-    private final SeasonalDaylight daylight = new SeasonalDaylight(dates, new DaylightSettings(10, 14));
+    private final SeasonalDaylight daylight = new SeasonalDaylight(dates, new DaylightSettings(10, 14, DaylightSettings.DEFAULT_SUMMER_SOLSTICE));
 
     /** The first IC day number on or after day 0 that falls on this date in IC year 790. */
     private long dayNumberOf(Month month, int day) {
@@ -28,21 +29,34 @@ class SeasonalDaylightTest {
     }
 
     private double hoursOn(Month month, int day) {
-        return daylight.daylightSeconds(dayNumberOf(month, day)) / 3600.0;
+        return hoursOn(daylight, month, day);
+    }
+
+    private double hoursOn(SeasonalDaylight schedule, Month month, int day) {
+        return schedule.daylightSeconds(dayNumberOf(month, day)) / 3600.0;
     }
 
     @Test
-    void midSummerIsLongestAndMidWinterShortest() {
+    void bothSolsticesFallInTheMiddleOfTheirSeasonsByDefault() {
+        assertEquals(14, hoursOn(Month.RAMPHASTOS, 1), 0.001);
+        assertEquals(10, hoursOn(Month.LITORIA, 1), 0.001);
         assertEquals(14, hoursOn(Month.DASYURUS, 45), TOLERANCE_SECONDS / 3600);
-        assertEquals(14, hoursOn(Month.RAMPHASTOS, 1), TOLERANCE_SECONDS / 3600);
         assertEquals(10, hoursOn(Month.RANA, 45), TOLERANCE_SECONDS / 3600);
-        assertEquals(10, hoursOn(Month.LITORIA, 1), TOLERANCE_SECONDS / 3600);
     }
 
     @Test
     void springAndAutumnAreEven() {
-        assertEquals(12, hoursOn(Month.CELESTINE, 45), 0.05);
-        assertEquals(12, hoursOn(Month.LONTRA, 45), 0.05);
+        assertEquals(12, hoursOn(Month.IDALIA, 1), 0.001);
+        assertEquals(12, hoursOn(Month.SAIMIRI, 1), 0.001);
+    }
+
+    @Test
+    void theWinterSolsticeFollowsAConfiguredSummerSolsticeByHalfAYear() {
+        SeasonalDaylight moved = new SeasonalDaylight(dates,
+                new DaylightSettings(10, 14, new IcMonthDay(Month.DASYURUS, 11)));
+
+        assertEquals(14, hoursOn(moved, Month.DASYURUS, 11), 0.001);
+        assertEquals(10, hoursOn(moved, Month.RANA, 11), 0.001);
     }
 
     @Test
@@ -67,8 +81,8 @@ class SeasonalDaylightTest {
 
     @Test
     void rejectsImpossibleSettings() {
-        assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(14, 10));
-        assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(0, 12));
-        assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(12, 24));
+        assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(14, 10, DaylightSettings.DEFAULT_SUMMER_SOLSTICE));
+        assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(0, 12, DaylightSettings.DEFAULT_SUMMER_SOLSTICE));
+        assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(12, 24, DaylightSettings.DEFAULT_SUMMER_SOLSTICE));
     }
 }
