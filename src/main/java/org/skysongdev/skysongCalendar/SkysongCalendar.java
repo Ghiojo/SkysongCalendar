@@ -14,7 +14,6 @@ import org.skysongdev.skysongCalendar.commands.DateCommand;
 import org.skysongdev.skysongCalendar.display.ChatPalette;
 import org.skysongdev.skysongCalendar.display.IcDateMessages;
 import org.skysongdev.skysongCalendar.items.CalendarItems;
-import org.skysongdev.skysongCalendar.time.MinecraftTime;
 import org.skysongdev.skysongCalendar.time.TimeSettings;
 import org.skysongdev.skysongCalendar.time.WorldTimeService;
 
@@ -28,7 +27,8 @@ public final class SkysongCalendar extends JavaPlugin {
         saveDefaultConfig();
         MiniMessage miniMessage = MiniMessage.miniMessage();
         Clock irlClock = Clock.system(IrlCalibration.ZONE);
-        IcClock clock = new IrlIcClock(irlClock, new IcDateConverter(IrlCalibration.SKYSONG));
+        IcDateConverter dates = new IcDateConverter(IrlCalibration.SKYSONG);
+        IcClock clock = new IrlIcClock(irlClock, dates);
         IcTimeSource icTime = new IrlIcTimeSource(irlClock, new IcMomentConverter(IrlCalibration.SKYSONG));
         IcDateMessages messages = new IcDateMessages(miniMessage, new ChatPalette());
 
@@ -36,7 +36,7 @@ public final class SkysongCalendar extends JavaPlugin {
         getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
         registerCalendarItems(clock, messages);
 
-        worldTime = new WorldTimeService(this, icTime, new MinecraftTime());
+        worldTime = new WorldTimeService(this, icTime, dates);
         worldTime.start(TimeSettings.from(getConfig()));
     }
 

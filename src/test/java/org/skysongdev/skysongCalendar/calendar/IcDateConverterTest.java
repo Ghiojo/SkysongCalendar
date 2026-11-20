@@ -66,6 +66,13 @@ class IcDateConverterTest {
         assertEquals(new IcDate(789, Festival.FESTIVAL, 6), at("2023-10-31T16:00"));
     }
 
+    @Test
+    void findsTheDateOfAnIcDayNumber() {
+        assertEquals(new IcDate(790, Month.CELESTINE, 1), converter.dateOfDay(0));
+        assertEquals(new IcDate(790, Month.CELESTINE, 4), converter.dateOfDay(3));
+        assertEquals(new IcDate(789, Festival.FESTIVAL, 6), converter.dateOfDay(-1));
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {2023, 2024, 2099, 2100})
     void everyCycleLastsExactlyOneIrlYear(int cycleYear) {

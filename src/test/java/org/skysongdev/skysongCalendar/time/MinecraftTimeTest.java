@@ -5,9 +5,12 @@ import org.skysongdev.skysongCalendar.calendar.IcMoment;
 import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MinecraftTimeTest {
-    private final MinecraftTime minecraftTime = new MinecraftTime();
+    private static final int TWELVE_HOURS = 12 * 3600;
+
+    private final MinecraftTime minecraftTime = new MinecraftTime(day -> TWELVE_HOURS);
 
     private long dayTimeAt(int icHour, int icMinute) {
         IcMoment moment = new IcMoment(100, new IcTimeOfDay(icHour * 3600 + icMinute * 60));
@@ -47,5 +50,33 @@ class MinecraftTimeTest {
         long midnight = minecraftTime.fullTimeOf(new IcMoment(101, new IcTimeOfDay(0)));
 
         assertEquals(1, midnight - lastSecond);
+    }
+
+    @Test
+    void longDaysPinSunriseAndSunsetAndKeepNoon() {
+        MinecraftTime fourteenHours = new MinecraftTime(day -> 14 * 3600);
+
+        assertEquals(100 * MinecraftTime.TICKS_PER_DAY, fourteenHours.fullTimeOf(at(100, 5, 0)));
+        assertEquals(100 * MinecraftTime.TICKS_PER_DAY + 6_000, fourteenHours.fullTimeOf(at(100, 12, 0)));
+        assertEquals(100 * MinecraftTime.TICKS_PER_DAY + 12_000, fourteenHours.fullTimeOf(at(100, 19, 0)));
+        assertEquals(100 * MinecraftTime.TICKS_PER_DAY + 18_000, fourteenHours.fullTimeOf(at(101, 0, 0)));
+    }
+
+    @Test
+    void neverJumpsOrRunsBackwardsWhenDaylightChangesEveryDay() {
+        MinecraftTime changing = new MinecraftTime(day -> (int) (10 * 3600 + Math.floorMod(day * 997, 4 * 3600)));
+        long previous = changing.fullTimeOf(new IcMoment(99, new IcTimeOfDay(IcTimeOfDay.SECONDS_PER_DAY - 3)));
+        for (long day = 100; day < 103; day++) {
+            for (int second = 0; second < IcTimeOfDay.SECONDS_PER_DAY; second += 3) {
+                long now = changing.fullTimeOf(new IcMoment(day, new IcTimeOfDay(second)));
+                long step = now - previous;
+                assertTrue(step >= 0 && step <= 2, "step of " + step + " ticks on day " + day + " at " + second);
+                previous = now;
+            }
+        }
+    }
+
+    private static IcMoment at(long day, int icHour, int icMinute) {
+        return new IcMoment(day, new IcTimeOfDay(icHour * 3600 + icMinute * 60));
     }
 }

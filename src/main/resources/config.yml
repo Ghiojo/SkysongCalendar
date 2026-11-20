@@ -7,3 +7,9 @@ time:
   # Worlds whose time this plugin never touches: no gamerule change, no time set.
   # The Nether and the End have no day cycle and are always skipped.
   blacklisted-worlds: []
+  # IC hours of daylight. The sun is up longest in the middle of Su'untah (summer) and
+  # shortest in the middle of Vinse'er (winter), changing smoothly through the year.
+  # Noon is always the same. Set both to 12 for even days and nights all year.
+  daylight:
+    min-hours: 10
+    max-hours: 14
