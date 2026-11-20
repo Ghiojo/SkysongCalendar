@@ -2,6 +2,7 @@ package org.skysongdev.skysongCalendar.calendar;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.ZoneOffset;
 
 /**
  * How IRL dates line up with the IC calendar.
@@ -10,6 +11,9 @@ import java.time.Year;
  * {@link AtmosCycle} of three IC years. The first IC year's months end on Feb 28, so its
  * 3-day festival falls on Feb 29 when the IRL year has one, and the cycle starts 120 IRL
  * days earlier, on Nov 1 of the year before.
+ *
+ * <p>IRL dates and times are read in {@link #ZONE}, a fixed offset with no daylight saving,
+ * so every IC day lasts exactly {@link #IRL_HOURS_PER_IC_DAY} IRL hours all year.
  *
  * @param epochCycleYear the IRL year whose Nov 1 starts a known cycle
  * @param epochIcYear    the IC year that cycle starts with
@@ -20,8 +24,19 @@ public record IrlCalibration(int epochCycleYear, int epochIcYear) {
 
     public static final int IC_DAYS_PER_IRL_DAY = 3;
 
+    /** IRL hours in one IC day: the IRL day splits into blocks of this length, from midnight. */
+    public static final int IRL_HOURS_PER_IC_DAY = 24 / IC_DAYS_PER_IRL_DAY;
+
+    /** The IRL time zone the calendar follows: UTC+1 all year, Paris winter time without DST. */
+    public static final ZoneOffset ZONE = ZoneOffset.ofHours(1);
+
     private static final int FIRST_YEAR_MONTHS_IRL_DAYS =
             Month.values().length * Month.LENGTH / IC_DAYS_PER_IRL_DAY;
+
+    /** The first IRL day of the epoch cycle, whose first IC day is IC day number 0. */
+    public LocalDate epochStart() {
+        return cycleStart(epochCycleYear);
+    }
 
     /** The IRL year whose cycle a date falls in: its own, or the one before until Nov 1. */
     public int cycleYearOf(LocalDate date) {
