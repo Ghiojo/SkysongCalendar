@@ -40,6 +40,6 @@ class IcDateMessagesTest {
         Component line = messages.describe(new IcDate(799, Month.IDALIA, 6)).get(0);
 
         assertEquals(NamedTextColor.YELLOW, line.color());
-        assertTrue(MiniMessage.miniMessage().serialize(line).contains("<#f3a8bc>Idalia"));
+        assertTrue(MiniMessage.miniMessage().serialize(line).contains("<#7b935b>Idalia"));
     }
 }
