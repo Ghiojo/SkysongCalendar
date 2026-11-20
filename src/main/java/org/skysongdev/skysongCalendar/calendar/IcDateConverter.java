@@ -12,6 +12,13 @@ public final class IcDateConverter {
         this.calibration = calibration;
     }
 
+    /** The IC date of an IC day number, counted as in {@link IcMoment#dayNumber()}. */
+    public IcDate dateOfDay(long dayNumber) {
+        LocalDateTime start = calibration.epochStart().atStartOfDay()
+                .plusHours(dayNumber * IrlCalibration.IRL_HOURS_PER_IC_DAY);
+        return toIcDate(start);
+    }
+
     public IcDate toIcDate(LocalDateTime irl) {
         LocalDate date = irl.toLocalDate();
         int cycleYear = calibration.cycleYearOf(date);

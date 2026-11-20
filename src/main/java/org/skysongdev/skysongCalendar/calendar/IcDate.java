@@ -16,4 +16,12 @@ public record IcDate(int year, CalendarPeriod period, int day) {
     public Season season() {
         return period.season();
     }
+
+    /** Days since the year's first day, Celestine 1 being 0; festival days come after Litoria 45. */
+    public int dayOfYear() {
+        int periodStart = period instanceof Month month
+                ? month.ordinal() * Month.LENGTH
+                : Month.values().length * Month.LENGTH;
+        return periodStart + day - 1;
+    }
 }
