@@ -26,10 +26,10 @@ public final class ChatPalette {
 
     private static String seasonStyle(Season season) {
         return switch (season) {
-            case FLORESCIA -> "#F3A8BC";
-            case SU_UNTAH -> "#FFD700";
-            case ALTRUE -> "#D45B12";
-            case VINSE_ER -> "#B3DAF1";
+            case FLORESCIA -> "#7B935B";
+            case SU_UNTAH -> "#C3A03F";
+            case ALTRUE -> "#B6654E";
+            case VINSE_ER -> "#6380A3";
         };
     }
 
