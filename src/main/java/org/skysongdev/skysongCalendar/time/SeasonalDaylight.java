@@ -1,8 +1,8 @@
 package org.skysongdev.skysongCalendar.time;
 
-import org.skysongdev.skysongCalendar.calendar.IcDate;
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.Month;
 import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
-import org.skysongdev.skysongCalendar.calendar.Month;
 
 /**
  * Daylight that follows the seasons on a smooth curve: longest on the summer solstice,

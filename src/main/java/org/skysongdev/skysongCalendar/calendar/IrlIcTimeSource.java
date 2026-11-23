@@ -1,5 +1,7 @@
 package org.skysongdev.skysongCalendar.calendar;
 
+import org.skysongdev.skysongCalendar.api.IcMoment;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 

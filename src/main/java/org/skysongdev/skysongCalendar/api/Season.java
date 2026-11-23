@@ -1,4 +1,4 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 /** The four seasons of Atmos. Each one lasts two months, about 30 days IRL. */
 public enum Season {

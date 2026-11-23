@@ -1,11 +1,11 @@
 package org.skysongdev.skysongCalendar.placeholders;
 
 import org.junit.jupiter.api.Test;
-import org.skysongdev.skysongCalendar.calendar.Festival;
-import org.skysongdev.skysongCalendar.calendar.IcDate;
-import org.skysongdev.skysongCalendar.calendar.IcMoment;
-import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
-import org.skysongdev.skysongCalendar.calendar.Month;
+import org.skysongdev.skysongCalendar.api.Festival;
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.IcMoment;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
+import org.skysongdev.skysongCalendar.api.Month;
 
 import java.util.Optional;
 

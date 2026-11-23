@@ -3,6 +3,10 @@ package org.skysongdev.skysongCalendar.calendar;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.skysongdev.skysongCalendar.api.Festival;
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.Month;
+import org.skysongdev.skysongCalendar.api.Season;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -3,8 +3,8 @@ package org.skysongdev.skysongCalendar.display;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.skysongdev.skysongCalendar.calendar.IcDate;
-import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
 
 import java.util.List;
 

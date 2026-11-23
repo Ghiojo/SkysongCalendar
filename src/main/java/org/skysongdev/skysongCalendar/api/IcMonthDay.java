@@ -1,4 +1,4 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 import java.util.Arrays;
 

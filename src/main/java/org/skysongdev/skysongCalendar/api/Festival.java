@@ -1,4 +1,4 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 /** The festival that closes every IC year, after Litoria. It belongs to the last season. */
 public enum Festival implements CalendarPeriod {

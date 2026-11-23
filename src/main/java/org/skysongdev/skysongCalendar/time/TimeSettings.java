@@ -1,7 +1,7 @@
 package org.skysongdev.skysongCalendar.time;
 
 import org.bukkit.configuration.Configuration;
-import org.skysongdev.skysongCalendar.calendar.IcMonthDay;
+import org.skysongdev.skysongCalendar.api.IcMonthDay;
 
 /**
  * The {@code time} section of {@code config.yml}.

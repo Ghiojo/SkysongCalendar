@@ -1,7 +1,7 @@
 package org.skysongdev.skysongCalendar.time;
 
-import org.skysongdev.skysongCalendar.calendar.IcMonthDay;
-import org.skysongdev.skysongCalendar.calendar.Month;
+import org.skysongdev.skysongCalendar.api.IcMonthDay;
+import org.skysongdev.skysongCalendar.api.Month;
 
 /**
  * The {@code time.daylight} section of {@code config.yml}.

@@ -1,4 +1,4 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 /** The nine days of an Atmos week. Every month and festival starts on {@link #MANAESDAY}. */
 public enum Weekday {

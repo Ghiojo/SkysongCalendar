@@ -1,7 +1,7 @@
 package org.skysongdev.skysongCalendar.time;
 
-import org.skysongdev.skysongCalendar.calendar.IcMoment;
-import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
+import org.skysongdev.skysongCalendar.api.IcMoment;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
 
 /**
  * Where a Minecraft world's clock stands at an IC moment: one Minecraft day per IC day.

@@ -1,8 +1,10 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IcDateTest {
 
@@ -28,5 +30,11 @@ class IcDateTest {
         assertEquals(46, new IcDate(790, Month.IDALIA, 2).dayOfYear());
         assertEquals(359, new IcDate(790, Month.LITORIA, 45).dayOfYear());
         assertEquals(360, new IcDate(790, Festival.FESTIVAL, 1).dayOfYear());
+    }
+
+    @Test
+    void knowsFestivalDaysFromMonthDays() {
+        assertTrue(new IcDate(790, Festival.FESTIVAL, 1).isFestival());
+        assertFalse(new IcDate(790, Month.LITORIA, 45).isFestival());
     }
 }
