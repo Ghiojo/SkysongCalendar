@@ -52,4 +52,7 @@ public interface SkysongCalendarApi {
 
     /** The IC calendar: dates, times, conversions, festivals and seasons. */
     @NotNull IcCalendar calendar();
+
+    /** How the calendar looks in chat: season colours and the {@code /date} lines. */
+    @NotNull CalendarStyle style();
 }

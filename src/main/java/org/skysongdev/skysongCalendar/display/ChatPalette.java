@@ -1,5 +1,6 @@
 package org.skysongdev.skysongCalendar.display;
 
+import net.kyori.adventure.text.format.TextColor;
 import org.skysongdev.skysongCalendar.api.CalendarPeriod;
 import org.skysongdev.skysongCalendar.api.Month;
 import org.skysongdev.skysongCalendar.api.Season;
@@ -10,6 +11,11 @@ public final class ChatPalette {
 
     public String season(Season season) {
         return styled(seasonStyle(season), season.displayName());
+    }
+
+    /** The colour of a season, which its months share. */
+    public TextColor seasonColour(Season season) {
+        return TextColor.fromHexString(seasonStyle(season));
     }
 
     /** A month takes its season's colour; a festival is left plain. */
