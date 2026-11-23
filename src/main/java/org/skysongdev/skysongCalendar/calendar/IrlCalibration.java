@@ -66,8 +66,12 @@ public record IrlCalibration(int epochCycleYear, int epochIcYear) {
 
     /** The shape of an IC year: how long its festival lasts, which depends on its cycle. */
     public IcYearLayout layoutOf(int icYear) {
-        int yearsSinceEpoch = icYear - epochIcYear;
-        int cycleYear = epochCycleYear + Math.floorDiv(yearsSinceEpoch, YEARS_PER_CYCLE);
-        return AtmosCycle.years(hasLeapFestival(cycleYear)).get(Math.floorMod(yearsSinceEpoch, YEARS_PER_CYCLE));
+        int cycleYear = cycleYearOfIcYear(icYear);
+        return AtmosCycle.years(hasLeapFestival(cycleYear)).get(icYear - firstIcYearOf(cycleYear));
+    }
+
+    /** The IRL year whose cycle holds this IC year. */
+    public int cycleYearOfIcYear(int icYear) {
+        return epochCycleYear + Math.floorDiv(icYear - epochIcYear, YEARS_PER_CYCLE);
     }
 }

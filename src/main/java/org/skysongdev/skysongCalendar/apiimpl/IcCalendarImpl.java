@@ -56,6 +56,16 @@ public final class IcCalendarImpl implements IcCalendar {
     }
 
     @Override
+    public @NotNull Instant irlStartOf(@NotNull IcDate date) {
+        return dates.irlStartOf(date).toInstant(IrlCalibration.ZONE);
+    }
+
+    @Override
+    public long dayNumberOf(@NotNull IcDate date) {
+        return dates.dayNumberOf(date);
+    }
+
+    @Override
     public @NotNull ZoneOffset irlZone() {
         return IrlCalibration.ZONE;
     }

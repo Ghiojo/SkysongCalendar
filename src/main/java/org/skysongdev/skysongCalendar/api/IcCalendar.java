@@ -49,6 +49,22 @@ public interface IcCalendar {
      */
     @NotNull IcDate dateOfDay(long dayNumber);
 
+    /**
+     * The IRL instant an IC date starts at, for example to schedule something for the next
+     * festival. IC days start at 00:00, 08:00 and 16:00 in {@link #irlZone()}.
+     *
+     * @throws IllegalArgumentException when the date doesn't exist, like Idalia 46 or a
+     *                                  festival day past the end of that year's festival
+     */
+    @NotNull Instant irlStartOf(@NotNull IcDate date);
+
+    /**
+     * The IC day number of an IC date, as {@link IcMoment#dayNumber()} counts them.
+     *
+     * @throws IllegalArgumentException when the date doesn't exist
+     */
+    long dayNumberOf(@NotNull IcDate date);
+
     /** The IRL time zone the calendar follows: UTC+1 all year, without daylight saving. */
     @NotNull ZoneOffset irlZone();
 
