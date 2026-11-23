@@ -3,6 +3,9 @@ package org.skysongdev.skysongCalendar;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.skysongdev.skysongCalendar.api.CalendarItemsApi;
+import org.skysongdev.skysongCalendar.api.IcCalendar;
+import org.skysongdev.skysongCalendar.api.WorldTime;
+import org.skysongdev.skysongCalendar.api.event.CalendarReloadEvent;
 import org.skysongdev.skysongCalendar.apiimpl.CalendarStyleImpl;
 import org.skysongdev.skysongCalendar.apiimpl.IcCalendarImpl;
 import org.skysongdev.skysongCalendar.apiimpl.MainThreadGuard;
@@ -19,6 +22,8 @@ import org.skysongdev.skysongCalendar.commands.CalendarCommand;
 import org.skysongdev.skysongCalendar.commands.DateCommand;
 import org.skysongdev.skysongCalendar.display.ChatPalette;
 import org.skysongdev.skysongCalendar.display.IcDateMessages;
+import org.skysongdev.skysongCalendar.events.CalendarEventTask;
+import org.skysongdev.skysongCalendar.events.DayWatcher;
 import org.skysongdev.skysongCalendar.items.CalendarItems;
 import org.skysongdev.skysongCalendar.placeholders.CalendarPlaceholderValues;
 import org.skysongdev.skysongCalendar.placeholders.CalendarPlaceholders;
@@ -43,23 +48,33 @@ public final class SkysongCalendar extends JavaPlugin {
         IcDateMessages messages = new IcDateMessages(miniMessage, palette);
         MainThreadGuard mainThread = new MainThreadGuard(getServer()::isPrimaryThread);
 
-        ConfigReload reload = new ConfigReload(this::reloadTimeSettings);
+        worldTime = new WorldTimeService(this, icTime, dates);
+        WorldTime worldTimeView = new WorldTimeImpl(worldTime, dates, icTime, mainThread);
+        ConfigReload reload = new ConfigReload(this::reloadTimeSettings,
+                () -> getServer().getPluginManager().callEvent(new CalendarReloadEvent(worldTimeView.settings())));
         getCommand("calendar").setExecutor(new CalendarCommand(miniMessage, reload));
         getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
         CalendarItemsApi items = registerCalendarItems(clock, messages, mainThread);
         registerPlaceholders(clock, icTime);
 
-        worldTime = new WorldTimeService(this, icTime, dates);
         try {
             worldTime.start(TimeSettings.from(getConfig()));
         } catch (IllegalArgumentException e) {
             getLogger().severe("World time sync is off, config.yml is invalid: " + e.getMessage());
         }
 
-        api = new SkysongCalendarApiImpl(new IcCalendarImpl(irlClock, IrlCalibration.SKYSONG),
-                new CalendarStyleImpl(miniMessage, palette, messages),
-                new WorldTimeImpl(worldTime, dates, icTime, mainThread), items, reload, mainThread);
+        IcCalendar calendar = new IcCalendarImpl(irlClock, IrlCalibration.SKYSONG);
+        api = new SkysongCalendarApiImpl(calendar, new CalendarStyleImpl(miniMessage, palette, messages),
+                worldTimeView, items, reload, mainThread);
         api.register(getServer().getServicesManager(), this);
+        startCalendarEvents(calendar);
+    }
+
+    /** Fires the day, season and festival events; Bukkit cancels the task on disable. */
+    private void startCalendarEvents(IcCalendar calendar) {
+        CalendarEventTask events = new CalendarEventTask(getServer().getPluginManager(), calendar,
+                new DayWatcher(calendar::today));
+        getServer().getScheduler().runTaskTimer(this, events, CalendarEventTask.INTERVAL_TICKS, CalendarEventTask.INTERVAL_TICKS);
     }
 
     /** Re-reads config.yml; if it is invalid, throws and leaves the running settings alone. */
