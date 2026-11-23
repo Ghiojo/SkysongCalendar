@@ -1,4 +1,4 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 /** The eight months of an Atmos year, in order. Every month has {@link #LENGTH} days. */
 public enum Month implements CalendarPeriod {

@@ -1,8 +1,8 @@
 package org.skysongdev.skysongCalendar.time;
 
 import org.junit.jupiter.api.Test;
-import org.skysongdev.skysongCalendar.calendar.IcMoment;
-import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
+import org.skysongdev.skysongCalendar.api.IcMoment;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

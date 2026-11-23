@@ -1,8 +1,8 @@
 package org.skysongdev.skysongCalendar.placeholders;
 
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
 import org.skysongdev.skysongCalendar.calendar.IcClock;
-import org.skysongdev.skysongCalendar.calendar.IcDate;
-import org.skysongdev.skysongCalendar.calendar.IcTimeOfDay;
 import org.skysongdev.skysongCalendar.calendar.IcTimeSource;
 
 import java.util.Locale;

@@ -1,16 +1,16 @@
 package org.skysongdev.skysongCalendar.calendar;
 
 import org.junit.jupiter.api.Test;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
 
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class IcTimeOfDayTest {
+class IrlTimeOfDayTest {
 
     private static IcTimeOfDay at(String irlTime) {
-        return IcTimeOfDay.of(LocalTime.parse(irlTime));
+        return IcMomentConverter.timeOfDay(LocalTime.parse(irlTime));
     }
 
     @Test
@@ -40,11 +40,5 @@ class IcTimeOfDayTest {
         assertEquals(1, time.hour());
         assertEquals(12, time.minute());
         assertEquals(3, time.second());
-    }
-
-    @Test
-    void rejectsSecondsOutsideTheDay() {
-        assertThrows(IllegalArgumentException.class, () -> new IcTimeOfDay(-1));
-        assertThrows(IllegalArgumentException.class, () -> new IcTimeOfDay(IcTimeOfDay.SECONDS_PER_DAY));
     }
 }

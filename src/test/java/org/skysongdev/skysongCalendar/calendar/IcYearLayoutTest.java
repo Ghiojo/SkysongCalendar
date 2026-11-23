@@ -1,6 +1,9 @@
 package org.skysongdev.skysongCalendar.calendar;
 
 import org.junit.jupiter.api.Test;
+import org.skysongdev.skysongCalendar.api.Festival;
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

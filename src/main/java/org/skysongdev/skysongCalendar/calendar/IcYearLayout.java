@@ -1,5 +1,9 @@
 package org.skysongdev.skysongCalendar.calendar;
 
+import org.skysongdev.skysongCalendar.api.Festival;
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.Month;
+
 /**
  * The shape of one IC year: the eight months, then a festival of {@code festivalDays} days.
  * A festival of 0 days is skipped, as the leap festival is in IRL years without a Feb 29.

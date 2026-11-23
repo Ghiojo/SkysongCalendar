@@ -1,5 +1,8 @@
 package org.skysongdev.skysongCalendar.calendar;
 
+import org.skysongdev.skysongCalendar.api.IcDate;
+import org.skysongdev.skysongCalendar.api.Season;
+
 /**
  * How many season changes have happened since the start of an epoch year. It goes up by 1
  * at every season change and never goes down, so SkysongItems can count timers in seasons.

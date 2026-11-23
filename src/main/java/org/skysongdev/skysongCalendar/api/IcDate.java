@@ -1,4 +1,4 @@
-package org.skysongdev.skysongCalendar.calendar;
+package org.skysongdev.skysongCalendar.api;
 
 /**
  * A day of the IC calendar.
@@ -15,6 +15,11 @@ public record IcDate(int year, CalendarPeriod period, int day) {
 
     public Season season() {
         return period.season();
+    }
+
+    /** Whether the day is one of the festival days that close the year. */
+    public boolean isFestival() {
+        return period instanceof Festival;
     }
 
     /** Days since the year's first day, Celestine 1 being 0; festival days come after Litoria 45. */

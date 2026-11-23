@@ -1,9 +1,9 @@
 package org.skysongdev.skysongCalendar.display;
 
-import org.skysongdev.skysongCalendar.calendar.CalendarPeriod;
-import org.skysongdev.skysongCalendar.calendar.Month;
-import org.skysongdev.skysongCalendar.calendar.Season;
-import org.skysongdev.skysongCalendar.calendar.Weekday;
+import org.skysongdev.skysongCalendar.api.CalendarPeriod;
+import org.skysongdev.skysongCalendar.api.Month;
+import org.skysongdev.skysongCalendar.api.Season;
+import org.skysongdev.skysongCalendar.api.Weekday;
 
 /** How calendar names are coloured in chat, as MiniMessage text. */
 public final class ChatPalette {

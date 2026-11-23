@@ -3,6 +3,8 @@ package org.skysongdev.skysongCalendar.calendar;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.skysongdev.skysongCalendar.api.IcMoment;
+import org.skysongdev.skysongCalendar.api.IcTimeOfDay;
 
 import java.time.LocalDateTime;
 
