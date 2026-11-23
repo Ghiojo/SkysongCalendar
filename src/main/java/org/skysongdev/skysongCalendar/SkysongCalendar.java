@@ -4,7 +4,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.skysongdev.skysongCalendar.apiimpl.CalendarStyleImpl;
 import org.skysongdev.skysongCalendar.apiimpl.IcCalendarImpl;
+import org.skysongdev.skysongCalendar.apiimpl.MainThreadGuard;
 import org.skysongdev.skysongCalendar.apiimpl.SkysongCalendarApiImpl;
+import org.skysongdev.skysongCalendar.apiimpl.WorldTimeImpl;
 import org.skysongdev.skysongCalendar.calendar.IcClock;
 import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
 import org.skysongdev.skysongCalendar.calendar.IcMomentConverter;
@@ -39,7 +41,8 @@ public final class SkysongCalendar extends JavaPlugin {
         ChatPalette palette = new ChatPalette();
         IcDateMessages messages = new IcDateMessages(miniMessage, palette);
 
-        getCommand("calendar").setExecutor(new CalendarCommand(miniMessage, this::reloadTimeSettings));
+        ConfigReload reload = new ConfigReload(this::reloadTimeSettings);
+        getCommand("calendar").setExecutor(new CalendarCommand(miniMessage, reload));
         getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
         registerCalendarItems(clock, messages);
         registerPlaceholders(clock, icTime);
@@ -51,8 +54,10 @@ public final class SkysongCalendar extends JavaPlugin {
             getLogger().severe("World time sync is off, config.yml is invalid: " + e.getMessage());
         }
 
+        MainThreadGuard mainThread = new MainThreadGuard(getServer()::isPrimaryThread);
         api = new SkysongCalendarApiImpl(new IcCalendarImpl(irlClock, IrlCalibration.SKYSONG),
-                new CalendarStyleImpl(miniMessage, palette, messages));
+                new CalendarStyleImpl(miniMessage, palette, messages),
+                new WorldTimeImpl(worldTime, dates, icTime, mainThread), reload, mainThread);
         api.register(getServer().getServicesManager(), this);
     }
 

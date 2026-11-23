@@ -16,7 +16,6 @@ public final class MinecraftTime {
     public static final long TICKS_PER_DAY = 24_000;
 
     private static final long TICKS_PER_HALF_DAY = TICKS_PER_DAY / 2;
-    private static final int NOON = IcTimeOfDay.SECONDS_PER_DAY / 2;
 
     private final DaylightSchedule daylight;
 
@@ -43,11 +42,11 @@ public final class MinecraftTime {
     }
 
     private int sunrise(long day) {
-        return NOON - daylight.daylightSeconds(day) / 2;
+        return DaylightSchedule.sunrise(daylight.daylightSeconds(day));
     }
 
     private int sunset(long day) {
-        return NOON + daylight.daylightSeconds(day) / 2;
+        return DaylightSchedule.sunset(daylight.daylightSeconds(day));
     }
 
     private static long dayStart(long day) {

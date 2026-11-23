@@ -1,10 +1,13 @@
 package org.skysongdev.skysongCalendar.time;
 
+import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
 import org.skysongdev.skysongCalendar.calendar.IcTimeSource;
+
+import java.util.Optional;
 
 /** Starts and stops driving world time from the IC clock, following {@link TimeSettings}. */
 public final class WorldTimeService {
@@ -12,6 +15,9 @@ public final class WorldTimeService {
     private final IcTimeSource icTime;
     private final IcDateConverter dates;
 
+    /** Read by the API from any thread, so every thread sees a reload. */
+    private volatile TimeSettings settings;
+    private ManagedWorlds worlds;
     private BukkitTask task;
     private DaylightCycleGuard guard;
 
@@ -23,11 +29,12 @@ public final class WorldTimeService {
 
     public void start(TimeSettings settings) {
         stop();
+        this.settings = settings;
         if (!settings.enabled()) {
             plugin.getLogger().info("World time sync is disabled in config.yml.");
             return;
         }
-        ManagedWorlds worlds = new ManagedWorlds(settings.blacklist());
+        worlds = new ManagedWorlds(settings.blacklist());
         guard = new DaylightCycleGuard(worlds);
         plugin.getServer().getWorlds().forEach(guard::claim);
         plugin.getServer().getPluginManager().registerEvents(guard, plugin);
@@ -37,7 +44,18 @@ public final class WorldTimeService {
         task = plugin.getServer().getScheduler().runTaskTimer(plugin, sync, 0L, settings.updateIntervalTicks());
     }
 
+    /** The settings last started with, even if they disable sync; empty if none were valid. */
+    public Optional<TimeSettings> settings() {
+        return Optional.ofNullable(settings);
+    }
+
+    /** Whether the time of this world follows the IC clock right now. */
+    public boolean manages(World world) {
+        return worlds != null && worlds.manages(world);
+    }
+
     public void stop() {
+        worlds = null;
         if (task != null) {
             task.cancel();
             task = null;

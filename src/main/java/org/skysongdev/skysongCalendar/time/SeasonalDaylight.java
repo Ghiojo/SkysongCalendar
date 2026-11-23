@@ -26,10 +26,16 @@ public final class SeasonalDaylight implements DaylightSchedule {
 
     @Override
     public int daylightSeconds(long dayNumber) {
-        return (int) Math.round(hoursOn(dates.dateOfDay(dayNumber)) * SECONDS_PER_HOUR);
+        return daylightSeconds(dates.dateOfDay(dayNumber));
     }
 
-    private double hoursOn(IcDate date) {
+    /** IC seconds from sunrise to sunset on this IC date. */
+    public int daylightSeconds(IcDate date) {
+        return (int) Math.round(hoursOn(date) * SECONDS_PER_HOUR);
+    }
+
+    /** IC hours from sunrise to sunset on this IC date. */
+    public double hoursOn(IcDate date) {
         double angle = 2 * Math.PI * (date.dayOfYear() - summerSolstice) / DAYS_PER_CURVE;
         return meanHours + swingHours * Math.cos(angle);
     }

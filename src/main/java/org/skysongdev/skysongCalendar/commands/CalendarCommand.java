@@ -6,8 +6,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
+import org.skysongdev.skysongCalendar.api.ReloadResult;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /** {@code /calendar reload}: re-reads {@code config.yml} and applies it. */
 public class CalendarCommand implements TabExecutor {
@@ -20,10 +22,10 @@ public class CalendarCommand implements TabExecutor {
     private static final String RELOAD_FAILED = "<red>The config couldn't be loaded, so nothing changed: <reason>";
 
     private final MiniMessage miniMessage;
-    private final Runnable reload;
+    private final Supplier<ReloadResult> reload;
 
-    /** @param reload re-reads the config and applies it; throws if the config is invalid */
-    public CalendarCommand(MiniMessage miniMessage, Runnable reload) {
+    /** @param reload re-reads the config and applies it, or leaves it alone if it is invalid */
+    public CalendarCommand(MiniMessage miniMessage, Supplier<ReloadResult> reload) {
         this.miniMessage = miniMessage;
         this.reload = reload;
     }
@@ -42,12 +44,10 @@ public class CalendarCommand implements TabExecutor {
     }
 
     private void reloadFor(CommandSender sender) {
-        try {
-            reload.run();
-            sender.sendMessage(miniMessage.deserialize(RELOADED));
-        } catch (IllegalArgumentException e) {
-            sender.sendMessage(miniMessage.deserialize(RELOAD_FAILED, Placeholder.unparsed("reason", e.getMessage())));
-        }
+        ReloadResult result = reload.get();
+        result.error().ifPresentOrElse(
+                reason -> sender.sendMessage(miniMessage.deserialize(RELOAD_FAILED, Placeholder.unparsed("reason", reason))),
+                () -> sender.sendMessage(miniMessage.deserialize(RELOADED)));
     }
 
     @Override

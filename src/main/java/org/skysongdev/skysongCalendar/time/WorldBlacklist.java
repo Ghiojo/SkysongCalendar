@@ -13,6 +13,11 @@ public final class WorldBlacklist {
         this.names = names.stream().map(WorldBlacklist::normalise).collect(Collectors.toUnmodifiableSet());
     }
 
+    /** The blacklisted names, in lower case. */
+    public Set<String> names() {
+        return names;
+    }
+
     public boolean contains(String worldName) {
         return names.contains(normalise(worldName));
     }
