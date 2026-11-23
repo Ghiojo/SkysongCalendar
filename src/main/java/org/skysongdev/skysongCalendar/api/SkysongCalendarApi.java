@@ -5,6 +5,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 /**
  * Entry point of the SkysongCalendar API, the supported way for other plugins to read the
  * IC calendar. Classes outside the {@code org.skysongdev.skysongCalendar.api} package are
@@ -58,6 +60,14 @@ public interface SkysongCalendarApi {
 
     /** How SkysongCalendar drives Minecraft world time: its settings and the daylight maths. */
     @NotNull WorldTime worldTime();
+
+    /**
+     * Calendar items and the {@code season} timer unit, which SkysongCalendar adds to
+     * SkysongItems.
+     *
+     * @return the hooks, empty when SkysongItems is not enabled
+     */
+    @NotNull Optional<CalendarItemsApi> items();
 
     /**
      * Re-reads SkysongCalendar's config.yml and applies it, as {@code /calendar reload} does.

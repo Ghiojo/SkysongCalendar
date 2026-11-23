@@ -2,6 +2,7 @@ package org.skysongdev.skysongCalendar;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skysongdev.skysongCalendar.api.CalendarItemsApi;
 import org.skysongdev.skysongCalendar.apiimpl.CalendarStyleImpl;
 import org.skysongdev.skysongCalendar.apiimpl.IcCalendarImpl;
 import org.skysongdev.skysongCalendar.apiimpl.MainThreadGuard;
@@ -40,11 +41,12 @@ public final class SkysongCalendar extends JavaPlugin {
         IcTimeSource icTime = new IrlIcTimeSource(irlClock, new IcMomentConverter(IrlCalibration.SKYSONG));
         ChatPalette palette = new ChatPalette();
         IcDateMessages messages = new IcDateMessages(miniMessage, palette);
+        MainThreadGuard mainThread = new MainThreadGuard(getServer()::isPrimaryThread);
 
         ConfigReload reload = new ConfigReload(this::reloadTimeSettings);
         getCommand("calendar").setExecutor(new CalendarCommand(miniMessage, reload));
         getCommand("date").setExecutor(new DateCommand(clock, icTime, messages));
-        registerCalendarItems(clock, messages);
+        CalendarItemsApi items = registerCalendarItems(clock, messages, mainThread);
         registerPlaceholders(clock, icTime);
 
         worldTime = new WorldTimeService(this, icTime, dates);
@@ -54,10 +56,9 @@ public final class SkysongCalendar extends JavaPlugin {
             getLogger().severe("World time sync is off, config.yml is invalid: " + e.getMessage());
         }
 
-        MainThreadGuard mainThread = new MainThreadGuard(getServer()::isPrimaryThread);
         api = new SkysongCalendarApiImpl(new IcCalendarImpl(irlClock, IrlCalibration.SKYSONG),
                 new CalendarStyleImpl(miniMessage, palette, messages),
-                new WorldTimeImpl(worldTime, dates, icTime, mainThread), reload, mainThread);
+                new WorldTimeImpl(worldTime, dates, icTime, mainThread), items, reload, mainThread);
         api.register(getServer().getServicesManager(), this);
     }
 
@@ -86,12 +87,16 @@ public final class SkysongCalendar extends JavaPlugin {
         new CalendarPlaceholders(this, new CalendarPlaceholderValues(clock, icTime)).register();
     }
 
-    /** Calendar items need SkysongItems; without it the plugin runs with its commands only. */
-    private void registerCalendarItems(IcClock clock, IcDateMessages messages) {
+    /**
+     * Calendar items need SkysongItems; without it the plugin runs with its commands only.
+     *
+     * @return the items' API view, or null when SkysongItems is not enabled
+     */
+    private CalendarItemsApi registerCalendarItems(IcClock clock, IcDateMessages messages, MainThreadGuard mainThread) {
         if (!getServer().getPluginManager().isPluginEnabled(CalendarItems.SKYSONG_ITEMS)) {
             getLogger().info(CalendarItems.SKYSONG_ITEMS + " is not enabled; calendar items are off.");
-            return;
+            return null;
         }
-        CalendarItems.register(this, clock, messages);
+        return CalendarItems.register(this, clock, messages, mainThread);
     }
 }

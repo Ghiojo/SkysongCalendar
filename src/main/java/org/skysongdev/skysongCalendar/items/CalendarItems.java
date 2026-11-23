@@ -2,6 +2,8 @@ package org.skysongdev.skysongCalendar.items;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.skysongdev.skysongCalendar.api.CalendarItemsApi;
+import org.skysongdev.skysongCalendar.apiimpl.MainThreadGuard;
 import org.skysongdev.skysongCalendar.calendar.IcClock;
 import org.skysongdev.skysongCalendar.calendar.IrlCalibration;
 import org.skysongdev.skysongCalendar.calendar.SeasonCount;
@@ -19,11 +21,15 @@ public final class CalendarItems {
     private CalendarItems() {
     }
 
-    public static void register(Plugin plugin, IcClock clock, IcDateMessages messages) {
+    /** Registers the hooks and returns their API view. */
+    public static CalendarItemsApi register(Plugin plugin, IcClock clock, IcDateMessages messages,
+                                            MainThreadGuard mainThread) {
         PluginManager plugins = plugin.getServer().getPluginManager();
         plugins.registerEvents(new CalendarItemTag(plugin), plugin);
         SeasonCount seasons = new SeasonCount(IrlCalibration.SKYSONG.epochIcYear());
         plugins.registerEvents(new SeasonTimeUnit(plugin, clock, seasons), plugin);
-        plugins.registerEvents(new CalendarItemListener(SkysongItemsApi.get().tags(), clock, messages), plugin);
+        CalendarItemsApi items = new CalendarItemsApiImpl(SkysongItemsApi.get().tags(), mainThread);
+        plugins.registerEvents(new CalendarItemListener(items, clock, messages), plugin);
+        return items;
     }
 }
