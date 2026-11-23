@@ -6,7 +6,11 @@ import org.bukkit.plugin.ServicesManager;
 import org.jetbrains.annotations.NotNull;
 import org.skysongdev.skysongCalendar.api.CalendarStyle;
 import org.skysongdev.skysongCalendar.api.IcCalendar;
+import org.skysongdev.skysongCalendar.api.ReloadResult;
 import org.skysongdev.skysongCalendar.api.SkysongCalendarApi;
+import org.skysongdev.skysongCalendar.api.WorldTime;
+
+import java.util.function.Supplier;
 
 /** The API SkysongCalendar registers for other plugins. */
 public final class SkysongCalendarApiImpl implements SkysongCalendarApi {
@@ -15,10 +19,17 @@ public final class SkysongCalendarApiImpl implements SkysongCalendarApi {
 
     private final IcCalendar calendar;
     private final CalendarStyle style;
+    private final WorldTime worldTime;
+    private final Supplier<ReloadResult> reload;
+    private final MainThreadGuard mainThread;
 
-    public SkysongCalendarApiImpl(IcCalendar calendar, CalendarStyle style) {
+    public SkysongCalendarApiImpl(IcCalendar calendar, CalendarStyle style, WorldTime worldTime,
+                                  Supplier<ReloadResult> reload, MainThreadGuard mainThread) {
         this.calendar = calendar;
         this.style = style;
+        this.worldTime = worldTime;
+        this.reload = reload;
+        this.mainThread = mainThread;
     }
 
     public void register(ServicesManager services, Plugin owner) {
@@ -42,5 +53,16 @@ public final class SkysongCalendarApiImpl implements SkysongCalendarApi {
     @Override
     public @NotNull CalendarStyle style() {
         return style;
+    }
+
+    @Override
+    public @NotNull WorldTime worldTime() {
+        return worldTime;
+    }
+
+    @Override
+    public @NotNull ReloadResult reload() {
+        mainThread.require("SkysongCalendarApi.reload");
+        return reload.get();
     }
 }

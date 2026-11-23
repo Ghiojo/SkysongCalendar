@@ -85,4 +85,18 @@ class SeasonalDaylightTest {
         assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(0, 12, DaylightSettings.DEFAULT_SUMMER_SOLSTICE));
         assertThrows(IllegalArgumentException.class, () -> new DaylightSettings(12, 24, DaylightSettings.DEFAULT_SUMMER_SOLSTICE));
     }
+
+    @Test
+    void answersByDateAsWellAsByDayNumber() {
+        IcDate summerSolstice = new IcDate(795, Month.RAMPHASTOS, 1);
+
+        assertEquals(14, daylight.hoursOn(summerSolstice), 0.001);
+        assertEquals(14 * 3600, daylight.daylightSeconds(summerSolstice));
+    }
+
+    @Test
+    void sunriseAndSunsetSitEvenlyAroundNoon() {
+        assertEquals(5 * 3600, DaylightSchedule.sunrise(14 * 3600));
+        assertEquals(19 * 3600, DaylightSchedule.sunset(14 * 3600));
+    }
 }

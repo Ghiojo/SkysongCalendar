@@ -55,4 +55,15 @@ public interface SkysongCalendarApi {
 
     /** How the calendar looks in chat: season colours and the {@code /date} lines. */
     @NotNull CalendarStyle style();
+
+    /** How SkysongCalendar drives Minecraft world time: its settings and the daylight maths. */
+    @NotNull WorldTime worldTime();
+
+    /**
+     * Re-reads SkysongCalendar's config.yml and applies it, as {@code /calendar reload} does.
+     * When the config is invalid nothing changes and the result says why.
+     *
+     * @throws IllegalStateException when called off the server's main thread
+     */
+    @NotNull ReloadResult reload();
 }
