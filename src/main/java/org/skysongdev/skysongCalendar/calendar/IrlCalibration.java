@@ -32,6 +32,8 @@ public record IrlCalibration(int epochCycleYear, int epochIcYear) {
     /** The IRL time zone the calendar follows: UTC+1 all year, Paris winter time without DST. */
     public static final ZoneOffset ZONE = ZoneOffset.ofHours(1);
 
+    private static final int YEARS_PER_CYCLE = AtmosCycle.years(false).size();
+
     private static final int FIRST_YEAR_MONTHS_IRL_DAYS =
             Month.values().length * Month.LENGTH / IC_DAYS_PER_IRL_DAY;
 
@@ -59,6 +61,13 @@ public record IrlCalibration(int epochCycleYear, int epochIcYear) {
 
     /** The IC year this cycle starts with. */
     public int firstIcYearOf(int cycleYear) {
-        return epochIcYear + (cycleYear - epochCycleYear) * AtmosCycle.years(false).size();
+        return epochIcYear + (cycleYear - epochCycleYear) * YEARS_PER_CYCLE;
+    }
+
+    /** The shape of an IC year: how long its festival lasts, which depends on its cycle. */
+    public IcYearLayout layoutOf(int icYear) {
+        int yearsSinceEpoch = icYear - epochIcYear;
+        int cycleYear = epochCycleYear + Math.floorDiv(yearsSinceEpoch, YEARS_PER_CYCLE);
+        return AtmosCycle.years(hasLeapFestival(cycleYear)).get(Math.floorMod(yearsSinceEpoch, YEARS_PER_CYCLE));
     }
 }

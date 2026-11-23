@@ -2,6 +2,8 @@ package org.skysongdev.skysongCalendar;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skysongdev.skysongCalendar.apiimpl.IcCalendarImpl;
+import org.skysongdev.skysongCalendar.apiimpl.SkysongCalendarApiImpl;
 import org.skysongdev.skysongCalendar.calendar.IcClock;
 import org.skysongdev.skysongCalendar.calendar.IcDateConverter;
 import org.skysongdev.skysongCalendar.calendar.IcMomentConverter;
@@ -23,6 +25,7 @@ import java.time.Clock;
 
 public final class SkysongCalendar extends JavaPlugin {
     private WorldTimeService worldTime;
+    private SkysongCalendarApiImpl api;
 
     @Override
     public void onEnable() {
@@ -45,6 +48,9 @@ public final class SkysongCalendar extends JavaPlugin {
         } catch (IllegalArgumentException e) {
             getLogger().severe("World time sync is off, config.yml is invalid: " + e.getMessage());
         }
+
+        api = new SkysongCalendarApiImpl(new IcCalendarImpl(irlClock, IrlCalibration.SKYSONG));
+        api.register(getServer().getServicesManager(), this);
     }
 
     /** Re-reads config.yml; if it is invalid, throws and leaves the running settings alone. */
@@ -55,6 +61,9 @@ public final class SkysongCalendar extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (api != null) {
+            api.unregister(getServer().getServicesManager());
+        }
         if (worldTime != null) {
             worldTime.stop();
         }
