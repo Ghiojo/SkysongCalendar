@@ -1,5 +1,5 @@
 name: SkysongCalendar
-version: '1.0'
+version: '${version}'
 main: org.skysongdev.skysongCalendar.SkysongCalendar
 api-version: '1.21'
 softdepend: [Skysong_Items, PlaceholderAPI]

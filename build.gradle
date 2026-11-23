@@ -1,9 +1,10 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group = 'org.skysongdev'
-version = '1.0'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
@@ -53,6 +54,32 @@ java {
     targetCompatibility = javaVersion
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+    // JitPack builds the javadoc jar, so a missing @param or similar must not fail a release.
+    options.addBooleanOption('Xdoclint:none', true)
+}
+
+// Other plugins compile against this jar, through JitPack, as
+// compileOnly 'com.github.Ghiojo:SkysongCalendar:<tag>' (see jitpack.yml).
+// Only the org.skysongdev.skysongCalendar.api package is supported for them.
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = rootProject.name
+            from components.java
+            // JitPack doesn't pass the group and tag to a custom install command, so they
+            // are read from the environment variables it sets for every build.
+            if (System.getenv('JITPACK')) {
+                groupId = System.getenv('GROUP')
+                version = System.getenv('VERSION')
+            }
+        }
     }
 }
 
