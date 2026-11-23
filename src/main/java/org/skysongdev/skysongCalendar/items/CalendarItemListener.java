@@ -7,18 +7,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.skysongdev.skysongCalendar.api.CalendarItemsApi;
 import org.skysongdev.skysongCalendar.calendar.IcClock;
 import org.skysongdev.skysongCalendar.display.IcDateMessages;
-import org.skysongdev.skysongitems.api.ItemTags;
 
 /** Shows the IC date and season to a player who right-clicks a calendar item. */
 public final class CalendarItemListener implements Listener {
-    private final ItemTags tags;
+    private final CalendarItemsApi items;
     private final IcClock clock;
     private final IcDateMessages messages;
 
-    public CalendarItemListener(ItemTags tags, IcClock clock, IcDateMessages messages) {
-        this.tags = tags;
+    public CalendarItemListener(CalendarItemsApi items, IcClock clock, IcDateMessages messages) {
+        this.items = items;
         this.clock = clock;
         this.messages = messages;
     }
@@ -37,7 +37,7 @@ public final class CalendarItemListener implements Listener {
     }
 
     private boolean isCalendar(ItemStack item) {
-        return tags.getBool(item, CalendarItemTag.ID).orElse(false);
+        return items.isCalendar(item);
     }
 
     /** Bukkit fires once per hand; with a calendar in each, only the main hand answers. */
