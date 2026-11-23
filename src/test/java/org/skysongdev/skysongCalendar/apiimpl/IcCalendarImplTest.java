@@ -76,4 +76,14 @@ class IcCalendarImplTest {
         IcCalendar calendar = at("2026-11-23T12:00:00Z");
         assertEquals(4 + 2, calendar.seasonCountOf(new IcDate(791, Month.LONTRA, 1)));
     }
+
+    @Test
+    void findsWhenAnIcDateStartsIrl() {
+        IcCalendar calendar = at("2026-11-23T12:00:00Z");
+
+        // Feb 29, 2024 at midnight in UTC+1 is 23:00 UTC the day before.
+        assertEquals(Instant.parse("2024-02-28T23:00:00Z"), calendar.irlStartOf(new IcDate(790, Festival.FESTIVAL, 1)));
+        assertEquals(calendar.today(), calendar.dateAt(calendar.irlStartOf(calendar.today())));
+        assertEquals(calendar.now().dayNumber(), calendar.dayNumberOf(calendar.today()));
+    }
 }
